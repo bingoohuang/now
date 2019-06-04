@@ -1,6 +1,8 @@
 # Now
 
-Now is time parser and toolkit for golang [![Go Report Card](https://goreportcard.com/badge/github.com/bingoohuang/now)](https://goreportcard.com/report/github.com/bingoohuang/now)
+Now is time parser and toolkit for golang 
+[![Build Status](https://travis-ci.org/bingoohuang/now.svg?branch=master)](https://travis-ci.org/bingoohuang/now)
+[![Go Report Card](https://goreportcard.com/badge/github.com/bingoohuang/now)](https://goreportcard.com/report/github.com/bingoohuang/now)
 
 # Build
 
