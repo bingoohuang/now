@@ -4,17 +4,46 @@ import "time"
 
 // Now now struct
 type Now struct {
-	time.Time
-	// WeekStartDay set week start day, default is sunday
-	WeekStartDay time.Weekday
+	// T time
+	T time.Time
+	// P presentation
+	P string
+	// L layout
+	L string
 }
 
-// New initialize Now with time
-func New(t time.Time) *Now {
-	return &Now{Time: t, WeekStartDay: time.Monday}
+func (n *Now) present() {
+	n.P = n.T.Format(n.L)
 }
 
-// NewNow initialize Now with now time
-func NewNow() *Now {
-	return New(time.Now())
+// Make initialize Now with time
+func Make(t time.Time, layout string) Now {
+	n := Now{T: t, L: ConvertLayout(layout)}
+	n.present()
+
+	return n
+}
+
+// MakeTime initialize Now with time
+func MakeTime(t time.Time) Now {
+	return Make(t, DayTimeMillisFmt)
+}
+
+// MakeNow initialize Now with now time
+func MakeNow() Now {
+	return MakeTime(time.Now())
+}
+
+// String returns n's presentation.
+func (n Now) String() string {
+	return n.P
+}
+
+// Between tells whether n between a and b.
+func (n Now) Between(a, b Now) bool {
+	t := n.T
+	at := a.T
+	bt := b.T
+
+	return t.Equal(at) || t.After(at) && t.Before(bt) || t.Equal(bt)
 }

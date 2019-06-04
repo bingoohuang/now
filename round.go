@@ -3,33 +3,36 @@ package now
 import "time"
 
 // BeginningOfMinute beginning of minute
-func (now *Now) BeginningOfMinute() *Now {
-	y, m, d := now.Date()
-	now.Time = time.Date(y, m, d, now.Time.Hour(), now.Time.Minute(), 0, 0, now.Time.Location())
-	return now
+func (n Now) BeginningOfMinute() Now {
+	y, m, d := n.T.Date()
+	n.T = time.Date(y, m, d, n.T.Hour(), n.T.Minute(), 0, 0, n.T.Location())
+	n.present()
+	return n
 }
 
 // BeginningOfMinute beginning of hour
-func (now *Now) BeginningOfHour() *Now {
-	y, m, d := now.Date()
-	now.Time = time.Date(y, m, d, now.Time.Hour(), 0, 0, 0, now.Time.Location())
-	return now
+func (n Now) BeginningOfHour() Now {
+	y, m, d := n.T.Date()
+	n.T = time.Date(y, m, d, n.T.Hour(), 0, 0, 0, n.T.Location())
+	n.present()
+	return n
 }
 
 // BeginningOfDay beginning of day
-func (now *Now) BeginningOfDay() *Now {
-	y, m, d := now.Date()
-	now.Time = time.Date(y, m, d, 0, 0, 0, 0, now.Time.Location())
-	return now
+func (n Now) BeginningOfDay() Now {
+	y, m, d := n.T.Date()
+	n.T = time.Date(y, m, d, 0, 0, 0, 0, n.T.Location())
+	n.present()
+	return n
 }
 
 // BeginningOfWeek beginning of week
-func (now *Now) BeginningOfWeek() *Now {
-	t := now.BeginningOfDay()
-	weekday := int(t.Weekday())
+func (n Now) BeginningOfWeek(weekStartDay time.Weekday) Now {
+	t := n.BeginningOfDay()
+	weekday := int(t.T.Weekday())
 
-	if now.WeekStartDay != time.Sunday {
-		weekStartDayInt := int(now.WeekStartDay)
+	if weekStartDay != time.Sunday {
+		weekStartDayInt := int(weekStartDay)
 
 		if weekday < weekStartDayInt {
 			weekday += 7 - weekStartDayInt
@@ -37,112 +40,140 @@ func (now *Now) BeginningOfWeek() *Now {
 			weekday -= weekStartDayInt
 		}
 	}
-	now.Time = t.AddDate(0, 0, -weekday)
-	return now
+	n.T = t.T.AddDate(0, 0, -weekday)
+	n.present()
+	return n
 }
 
 // BeginningOfMonth beginning of month
-func (now *Now) BeginningOfMonth() *Now {
-	y, m, _ := now.Date()
-	now.Time = time.Date(y, m, 1, 0, 0, 0, 0, now.Location())
-	return now
+func (n Now) BeginningOfMonth() Now {
+	y, m, _ := n.T.Date()
+	n.T = time.Date(y, m, 1, 0, 0, 0, 0, n.T.Location())
+	n.present()
+	return n
 }
 
 // BeginningOfQuarter beginning of quarter
-func (now *Now) BeginningOfQuarter() *Now {
-	month := now.BeginningOfMonth()
-	offset := (int(month.Month()) - 1) % 3
-	now.Time = month.AddDate(0, -offset, 0)
-	return now
+func (n Now) BeginningOfQuarter() Now {
+	month := n.BeginningOfMonth()
+	offset := (int(month.T.Month()) - 1) % 3
+	n.T = month.T.AddDate(0, -offset, 0)
+	n.present()
+	return n
 }
 
 // BeginningOfHalf beginning of half year
-func (now *Now) BeginningOfHalf() *Now {
-	month := now.BeginningOfMonth()
-	offset := (int(month.Month()) - 1) % 6
-	now.Time = month.AddDate(0, -offset, 0)
-	return now
+func (n Now) BeginningOfHalf() Now {
+	month := n.BeginningOfMonth()
+	offset := (int(month.T.Month()) - 1) % 6
+	n.T = month.T.AddDate(0, -offset, 0)
+	n.present()
+	return n
 }
 
 // BeginningOfYear BeginningOfYear beginning of year
-func (now *Now) BeginningOfYear() *Now {
-	y, _, _ := now.Date()
-	now.Time = time.Date(y, time.January, 1, 0, 0, 0, 0, now.Location())
-	return now
+func (n Now) BeginningOfYear() Now {
+	y, _, _ := n.T.Date()
+	n.T = time.Date(y, time.January, 1, 0, 0, 0, 0, n.T.Location())
+	n.present()
+	return n
 }
 
 // EndOfMinute end of minute
-func (now *Now) EndOfMinute() *Now {
-	now.Time = now.BeginningOfMinute().Add(time.Minute - time.Nanosecond)
-	return now
+func (n Now) EndOfMinute() Now {
+	n.T = n.BeginningOfMinute().T.Add(time.Minute - time.Nanosecond)
+	n.present()
+	return n
 }
 
 // EndOfHour end of hour
-func (now *Now) EndOfHour() *Now {
-	now.Time = now.BeginningOfHour().Add(time.Hour - time.Nanosecond)
-	return now
+func (n Now) EndOfHour() Now {
+	n.T = n.BeginningOfHour().T.Add(time.Hour - time.Nanosecond)
+	n.present()
+	return n
 }
 
 // EndOfDay end of day
-func (now *Now) EndOfDay() *Now {
-	y, m, d := now.Date()
-	now.Time = time.Date(y, m, d, 23, 59, 59, int(time.Second-time.Nanosecond), now.Location())
-	return now
+func (n Now) EndOfDay() Now {
+	y, m, d := n.T.Date()
+	n.T = time.Date(y, m, d, 23, 59, 59, int(time.Second-time.Nanosecond), n.T.Location())
+	n.present()
+	return n
 }
 
 // EndOfWeek end of week
-func (now *Now) EndOfWeek() *Now {
-	now.Time = now.BeginningOfWeek().AddDate(0, 0, 7).Add(-time.Nanosecond)
-	return now
+func (n Now) EndOfWeek(weekStartDay time.Weekday) Now {
+	n.T = n.BeginningOfWeek(weekStartDay).T.AddDate(0, 0, 7).Add(-time.Nanosecond)
+	n.present()
+	return n
 }
 
 // EndOfMonth end of month
-func (now *Now) EndOfMonth() *Now {
-	now.Time = now.BeginningOfMonth().AddDate(0, 1, 0).Add(-time.Nanosecond)
-	return now
+func (n Now) EndOfMonth() Now {
+	n.T = n.BeginningOfMonth().T.AddDate(0, 1, 0).Add(-time.Nanosecond)
+	n.present()
+	return n
 }
 
 // EndOfQuarter end of quarter
-func (now *Now) EndOfQuarter() *Now {
-	now.Time = now.BeginningOfQuarter().AddDate(0, 3, 0).Add(-time.Nanosecond)
-	return now
+func (n Now) EndOfQuarter() Now {
+	n.T = n.BeginningOfQuarter().T.AddDate(0, 3, 0).Add(-time.Nanosecond)
+	n.present()
+	return n
 }
 
 // EndOfHalf end of half year
-func (now *Now) EndOfHalf() *Now {
-	now.Time = now.BeginningOfHalf().AddDate(0, 6, 0).Add(-time.Nanosecond)
-	return now
+func (n Now) EndOfHalf() Now {
+	n.T = n.BeginningOfHalf().T.AddDate(0, 6, 0).Add(-time.Nanosecond)
+	n.present()
+	return n
 }
 
 // EndOfYear end of year
-func (now *Now) EndOfYear() *Now {
-	now.Time = now.BeginningOfYear().AddDate(1, 0, 0).Add(-time.Nanosecond)
-	return now
+func (n Now) EndOfYear() Now {
+	n.T = n.BeginningOfYear().T.AddDate(1, 0, 0).Add(-time.Nanosecond)
+	n.present()
+	return n
 }
 
 // Monday monday
-func (now *Now) Monday() *Now {
-	t := now.BeginningOfDay()
-	weekday := int(t.Weekday())
+func (n Now) Monday() Now {
+	t := n.BeginningOfDay()
+	weekday := int(t.T.Weekday())
 	if weekday == 0 {
 		weekday = 7
 	}
-	now.Time = t.AddDate(0, 0, -weekday+1)
-	return now
+	n.T = t.T.AddDate(0, 0, -weekday+1)
+	n.present()
+	return n
 }
 
 // Sunday sunday
-func (now *Now) Sunday() *Now {
-	now.BeginningOfDay()
-	weekday := int(now.Weekday())
+func (n Now) Sunday() Now {
+	n.BeginningOfDay()
+	weekday := int(n.T.Weekday())
 	if weekday != 0 {
-		now.Time = now.AddDate(0, 0, (7 - weekday))
+		n.T = n.T.AddDate(0, 0, 7-weekday)
 	}
-	return now
+	return n.BeginningOfDay()
 }
 
 // EndOfSunday end of sunday
-func (now *Now) EndOfSunday() *Now {
-	New(now.Sunday().Time).EndOfDay()
-	return now
+func (n Now) EndOfSunday() Now {
+	return n.Sunday().EndOfDay()
+}
+
+// Offset add offset to n
+func (n Now) Offset(offset time.Duration) Now {
+	n.T = n.T.Add(offset)
+	n.present()
+	return n
+}
+
+// RoundNano add offset to n
+func (n Now) RoundNano() Now {
+	y, m, d := n.T.Date()
+	n.T = time.Date(y, m, d, n.T.Hour(), n.T.Minute(), n.T.Second(), 0, n.T.Location())
+	n.present()
+	return n
 }
