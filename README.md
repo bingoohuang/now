@@ -1,8 +1,13 @@
 # Now
 
-Now is time parser and toolkit for golang 
 [![Build Status](https://travis-ci.org/bingoohuang/now.svg?branch=master)](https://travis-ci.org/bingoohuang/now)
-[![Go Report Card](https://goreportcard.com/badge/github.com/bingoohuang/now)](https://goreportcard.com/report/github.com/bingoohuang/now)
+[![GoDoc](https://godoc.org/github.com/bingoohuang/now?status.svg)](https://godoc.org/github.com/bingoohuang/now)
+[![Language](https://img.shields.io/badge/language-go-lightgrey.svg)](https://github.com/bingoohuang/now)
+[![License](https://img.shields.io/badge/license-New%20BSD-yellow.svg?style=flat)](LICENSE)
+[![codecov](https://codecov.io/gh/bingoohuang/now/branch/master/graph/badge.svg)](https://codecov.io/gh/bingoohuang/now)
+[![goreport](https://www.goreportcard.com/badge/github.com/bingoohuang/now)](https://www.goreportcard.com/report/github.com/bingoohuang/now)
+
+Now is time parser and toolkit for golang 
 
 # Build
 

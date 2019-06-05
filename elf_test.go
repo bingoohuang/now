@@ -9,7 +9,7 @@ import (
 )
 
 func print(n now.Now) {
-	fmt.Println(n.T.Format(now.ConvertLayout(layoutSSS)), n.T.Weekday())
+	fmt.Println(n.T.Format(now.ConvertLayout("yyyy-MM-dd HH:mm:ss.SSS")), n.T.Weekday())
 }
 func TestExample(t *testing.T) {
 	print(now.BeginningOfMinute())          // 2019-06-04 10:01:00.000 Tuesday

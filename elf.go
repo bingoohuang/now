@@ -3,14 +3,14 @@ package now
 import "time"
 
 // MustParseAnyInLocation must parse string to Now in location or will panic
-func MustParseAnyInLocation(loc *time.Location, strs ...string) Now {
+func MustParseAnyInLocation(loc *time.Location, strs string, formats ...string) Now {
 	n := MakeTime(time.Now().In(loc))
-	return n.MustParseAny(strs...)
+	return n.MustParseAny(strs, formats...)
 }
 
 // MustParseAny must parse string to Now or will panic
-func MustParseAny(strs ...string) Now {
-	return MakeTime(time.Now()).MustParseAny(strs...)
+func MustParseAny(strs string, formats ...string) Now {
+	return MakeTime(time.Now()).MustParseAny(strs, formats...)
 }
 
 // BeginningOfMinute beginning of minute
@@ -99,17 +99,17 @@ func EndOfSunday() Now {
 }
 
 // ParseAny parse string to Now
-func ParseAny(strs ...string) (Now, error) {
+func ParseAny(strs string, formats ...string) (Now, error) {
 	n := MakeTime(time.Now())
-	err := n.ParseAny(strs...)
+	err := n.ParseAny(strs, formats...)
 
 	return n, err
 }
 
 // ParseAnyInLocation parse string to Now in location
-func ParseAnyInLocation(loc *time.Location, strs ...string) (Now, error) {
+func ParseAnyInLocation(loc *time.Location, strs string, formats ...string) (Now, error) {
 	n := MakeTime(time.Now().In(loc))
-	err := n.ParseAny(strs...)
+	err := n.ParseAny(strs, formats...)
 
 	return n, err
 }

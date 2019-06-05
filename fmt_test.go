@@ -19,14 +19,9 @@ func TestFormat(t *testing.T) {
 }
 
 func TestHHMM(t *testing.T) {
-	day := "2019-06-01 22:32:53.012"
-	layout := now.DayTimeMillisFmt
-	n := now.MakeNow()
-	err := n.Parse(day, layout)
-	assert.Nil(t, err)
+	n := now.MustParseAny("2019-06-01 22:11:22.333")
 
-	err = n.Parse("22:00:00.000", "HH:mm:ss.SSS")
+	err := n.Parse("22:00:00.000", "HH:mm:ss.SSS")
 	assert.Nil(t, err)
-
 	assert.Equal(t, n.String(), "2019-06-01 22:00:00.000")
 }
