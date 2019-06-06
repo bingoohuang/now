@@ -57,41 +57,44 @@ func (n *Now) ParseAny(strs string, formats ...string) (err error) {
 		hasTime := hasTimeReg.MatchString(str) // match 15:04:05, 15
 		onlyTime = hasTime && onlyTime && onlyTimeReg.MatchString(str)
 
-		if t, err = parseWithFormat(str, fmts); err == nil {
-			location := t.Location()
-			if location.String() == "UTC" {
-				location = currentLocation
+		t, err = parseWithFormat(str, fmts)
+		if err != nil {
+			continue
+		}
+
+		location := t.Location()
+		if location.String() == "UTC" {
+			location = currentLocation
+		}
+
+		pt = []int{t.Nanosecond(), t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
+
+		for i, v := range pt {
+			// Don't reset hour, minute, second if current time str including time
+			if hasTime && i <= 3 {
+				continue
 			}
 
-			pt = []int{t.Nanosecond(), t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
+			// If value is zero, replace it with current time
+			if v == 0 {
+				if setCurrentTime {
+					pt[i] = currentTime[i]
+				}
+			} else {
+				setCurrentTime = true
+			}
 
-			for i, v := range pt {
-				// Don't reset hour, minute, second if current time str including time
-				if hasTime && i <= 3 {
+			// if current time only includes time, should change day, month to current time
+			if onlyTime {
+				if i == 4 || i == 5 {
+					pt[i] = currentTime[i]
 					continue
 				}
-
-				// If value is zero, replace it with current time
-				if v == 0 {
-					if setCurrentTime {
-						pt[i] = currentTime[i]
-					}
-				} else {
-					setCurrentTime = true
-				}
-
-				// if current time only includes time, should change day, month to current time
-				if onlyTime {
-					if i == 4 || i == 5 {
-						pt[i] = currentTime[i]
-						continue
-					}
-				}
 			}
-
-			t = time.Date(pt[6], time.Month(pt[5]), pt[4], pt[3], pt[2], pt[1], pt[0], location)
-			currentTime = []int{t.Nanosecond(), t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
 		}
+
+		t = time.Date(pt[6], time.Month(pt[5]), pt[4], pt[3], pt[2], pt[1], pt[0], location)
+		currentTime = []int{t.Nanosecond(), t.Second(), t.Minute(), t.Hour(), t.Day(), int(t.Month()), t.Year()}
 	}
 
 	n.T = t

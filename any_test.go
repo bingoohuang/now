@@ -47,6 +47,15 @@ func TestMondayAndSunday(t *testing.T) {
 	a(now.MakeTime(n).BeginningOfWeek(time.Monday).Format(layout), "2013-11-18 00:00:00")
 }
 
+func TestParsePanic(t *testing.T) {
+	defer func() {
+		r := recover()
+		assert.NotNil(t, r)
+	}()
+
+	now.MakeNow().MustParseAny("04 Feb 12:09")
+}
+
 func TestParse(t *testing.T) {
 	a := assert.New(t).Equal
 	l := "yyyy-MM-dd HH:mm:ss"

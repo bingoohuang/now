@@ -16,6 +16,9 @@ func TestFormat(t *testing.T) {
 
 	day2 := n.Format(layout)
 	assert.Equal(t, day2, day)
+
+	err = n.Parse("04 Feb 12:09", "HH:mm")
+	assert.NotNil(t, err)
 }
 
 func TestHHMM(t *testing.T) {

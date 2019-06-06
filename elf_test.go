@@ -5,12 +5,27 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
+
 	"github.com/bingoohuang/now"
 )
 
 func print(n now.Now) {
 	fmt.Println(n.T.Format(now.ConvertLayout("yyyy-MM-dd HH:mm:ss.SSS")), n.T.Weekday())
 }
+
+func TestParseAny(t *testing.T) {
+	_, err := now.ParseAny("04 Feb 12:09")
+	assert.NotNil(t, err)
+
+	_, err = now.ParseAnyInLocation(time.Local, "04 Feb 12:09")
+	assert.NotNil(t, err)
+
+	a := now.MakeTime(time.Now().Add(-1 * time.Minute)).Format("HH:mm")
+	b := now.MakeTime(time.Now().Add(1 * time.Minute)).Format("HH:mm")
+	assert.True(t, now.Between(a, b))
+}
+
 func TestExample(t *testing.T) {
 	print(now.BeginningOfMinute())          // 2019-06-04 10:01:00.000 Tuesday
 	print(now.BeginningOfHour())            // 2019-06-04 10:00:00.000 Tuesday

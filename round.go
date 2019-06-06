@@ -29,17 +29,8 @@ func (n Now) BeginningOfDay() Now {
 // BeginningOfWeek beginning of week
 func (n Now) BeginningOfWeek(weekStartDay time.Weekday) Now {
 	t := n.BeginningOfDay()
-	weekday := int(t.T.Weekday())
+	weekday := int(t.T.Weekday()) - int(weekStartDay)
 
-	if weekStartDay != time.Sunday {
-		weekStartDayInt := int(weekStartDay)
-
-		if weekday < weekStartDayInt {
-			weekday += 7 - weekStartDayInt
-		} else {
-			weekday -= weekStartDayInt
-		}
-	}
 	n.T = t.T.AddDate(0, 0, -weekday)
 	n.present()
 	return n
@@ -103,7 +94,8 @@ func (n Now) EndOfDay() Now {
 
 // EndOfWeek end of week
 func (n Now) EndOfWeek(weekStartDay time.Weekday) Now {
-	n.T = n.BeginningOfWeek(weekStartDay).T.AddDate(0, 0, 7).Add(-time.Nanosecond)
+	t := n.BeginningOfWeek(weekStartDay)
+	n.T = t.T.AddDate(0, 0, 7).Add(-time.Nanosecond)
 	n.present()
 	return n
 }
