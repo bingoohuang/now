@@ -1,6 +1,9 @@
 package now
 
-import "strings"
+import (
+	"strings"
+	"time"
+)
 
 const DayFmt = "yyyy-MM-dd"
 const TimeFmt = "HH:mm:ss"
@@ -18,4 +21,19 @@ func ConvertLayout(layout string) string {
 	lo = strings.Replace(lo, "ss", "05", -1)
 	lo = strings.Replace(lo, "SSS", "000", -1)
 	return lo
+}
+
+// FormatTime 日期转字符串
+func FormatTime(d time.Time, layout string) string {
+	return d.Format(ConvertLayout(layout))
+}
+
+// ParseTimeLocal 日期转字符串
+func ParseTimeLocal(d, layout string) (time.Time, error) {
+	return ParseTime(d, layout, time.Local)
+}
+
+// ParseTimeLocal 日期转字符串
+func ParseTime(d, layout string, loc *time.Location) (time.Time, error) {
+	return time.ParseInLocation(ConvertLayout(layout), d, loc)
 }
